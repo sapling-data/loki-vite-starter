@@ -1,6 +1,6 @@
 // @ts-check
 /* eslint-disable no-console, no-loop-func, max-len */
-require('dotenv').config();
+require("dotenv").config();
 
 const axios = require("axios").default;
 const fs = require("fs");
@@ -25,13 +25,13 @@ const path = require("path");
  * @property {PackageJson['appInfo']['loki']['cloudCodeName']} appInfo.loki.cloudCodeName - The name of your cloud environment
  * @property {PackageJson['appInfo']['loki']['pageName']} appInfo.loki.pageName - The name of the page (the page title)
  * */
-const packageJson = require('./package.json');
+const packageJson = require("./package.json");
 
 const {
   appInfo: { loki },
 } = packageJson;
 const baseUrl = `https://${loki.cloudPrefix}.saplingdata.com/${loki.appCodeName}-AppBuilder/api`;
-const resourceUrl = '/urn/com/loki/core/model/api/resource/v';
+const resourceUrl = "/urn/com/loki/core/model/api/resource/v";
 const pageFileListUrl = `/urn/com/loki/core/model/api/list/v/urn/com/${loki.cloudCodeName}/${loki.appCodeName}/app/pages/${loki.pageCodeName}?format=json`;
 const pageFileUploadUrl = `/urn/com/loki/core/model/api/resource/v/urn/com/${loki.cloudCodeName}/${loki.appCodeName}/app/pages/${loki.pageCodeName}!`;
 const pageDataUploadUrl = `/urn/com/loki/modeler/model/types/combinedPageExt/v/urn/com/${loki.cloudPrefix}/${loki.appCodeName}/app/pages/${loki.pageCodeName}`;
@@ -67,14 +67,14 @@ const pushToLoki = async () => {
   distFiles.forEach((file) => {
     const filePath = `./dist/${file}`;
 
-    fs.readFile(filePath, 'utf8', (err, data) => {
+    fs.readFile(filePath, "utf8", (err, data) => {
       const baseFileName = file;
       // const baseFileName = file.replace(`${loki.pageCodeName}!`, '');
       const uploadUrl = pageFileUploadUrl + baseFileName;
       lokiSession
         .post(uploadUrl, data, {
           headers: {
-            'Content-Type': 'text/plain',
+            "Content-Type": "text/plain",
           },
         })
         .then(() => {
@@ -100,7 +100,7 @@ async function deleteCurrentFiles(files) {
 
   // eslint-disable-next-line no-plusplus
   for (let i = 0; i < files.length; i++) {
-    const deleteUrl = `${resourceUrl}/${files[i].urn.replace(/[:]/g, '/')}`;
+    const deleteUrl = `${resourceUrl}/${files[i].urn.replace(/[:]/g, "/")}`;
     // eslint-disable-next-line no-await-in-loop
     await lokiSession
       .delete(deleteUrl)
@@ -117,7 +117,7 @@ async function deleteCurrentFiles(files) {
 async function clearFiles() {
   const currentFiles = await getCurrentFiles();
   await deleteCurrentFiles(currentFiles);
-  console.log('Finished clearing previous build!');
+  console.log("Finished clearing previous build!");
 }
 
 const deployApp = async () => {
